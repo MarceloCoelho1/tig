@@ -13,8 +13,12 @@ switch(command) {
 }
 
 function init() {
-  console.log("initializing .git repository")
+  fs.mkdirSync(path.join(process.cwd(), '.git'), { recursive: true });
+  fs.mkdirSync(path.join(process.cwd(), ".git", "objects"), { recursive: true });
+  fs.mkdirSync(path.join(process.cwd(), ".git", "refs"), { recursive: true });
 
-  fs.mkdirSync()
+  fs.writeFileSync(path.join(process.cwd(), ".git", "HEAD"), "ref: refs/heads/main\n");
+
+  console.log("Initialized empty Git repository in ", path.join(process.cwd(), '.git'))
 }
 
