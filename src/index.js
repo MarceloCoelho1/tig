@@ -65,7 +65,7 @@ function catFile(hash) {
     throw new Error(`Object ${hash} not found`);
   }
 
-  const content = fs.readFileSync(path.join(dir, file));
+  const content = fs.readFileSync(file);
   const dataUnzipped = zlib.inflateSync(content);
   const res = dataUnzipped.toString().split('\0')[1];
   process.stdout.write(res);
