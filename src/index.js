@@ -14,6 +14,12 @@ switch (command[2]) {
     }
     catFile(command[3]);
     break;
+  case "add":
+    if (command.length < 4) {
+      throw new Error('Usage: add <file>');
+    }
+    add(command[3]);
+    break;
   case "hash-object":
     if (command.length < 4) {
       throw new Error('Usage: hash-object <file>');
@@ -53,6 +59,28 @@ function init() {
   fs.writeFileSync(path.join(process.cwd(), ".tig", "HEAD"), "ref: refs/heads/main\n");
 
   console.log("Initialized empty Tig repository in ", path.join(process.cwd(), '.tig'))
+}
+
+function add(file) {
+  const tigDir = path.join(process.cwd(), '.tig');
+
+  if (!fs.existsSync(tigDir)) {
+    throw new Error('Tig repository not initialized. Please run "init" first.');
+  }
+
+  const filePath = path.join(process.cwd(), file);
+
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`File ${file} not found`);
+  }
+
+  const sha1 = hashObject(file);
+  const stageFilePath = path.join(tigDir, 'stage', file);
+
+  fs.mkdirSync(path.dirname(stageFilePath), { recursive: true });
+  fs.writeFileSync(stageFilePath, sha1);
+
+  console.log(`Added ${file}`);
 }
 
 function hashObject(file) {
